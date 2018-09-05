@@ -4,10 +4,12 @@ import (
     "fmt"
     "net/http"
     "os"
+    "time"
 )
 
 func tranquillou(w http.ResponseWriter, r *http.Request) {
-    w.Write([]byte(""))
+    fmt.Printf("%s %s%s\n", time.Now().Format("2006-01-02T15:04:05Z"), r.Host, r.URL.Path)
+    w.WriteHeader(http.StatusOK)
 }
 
 func main() {
