@@ -3,4 +3,4 @@ This is a stupid http server that's always happy and returns 200 OK. That looks 
 - to test service reachability
 - as the most basic mock for a write-only http service (like monitoring)
 
-Available at https://store.docker.com/profiles/yaude
+Available at https://store.docker.com/community/images/yaude/tranquillou-http
