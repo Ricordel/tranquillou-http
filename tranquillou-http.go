@@ -15,12 +15,14 @@ func tranquillou(w http.ResponseWriter, r *http.Request) {
 func main() {
     http.HandleFunc("/", tranquillou)
 
+    var listenAddress string
+
     if len(os.Args) < 2 {
-        fmt.Fprintf(os.Stderr, "Usage: %s listen-address\n", os.Args[0])
-        os.Exit(1)
+        listenAddress = "localhost:8080"
+    } else {
+        listenAddress = os.Args[1]
     }
 
-    listenAddress := os.Args[1]
 
     if err := http.ListenAndServe(listenAddress, nil); err != nil {
         panic(err)
