@@ -3,6 +3,8 @@ all:
 
 docker:
 	docker build -t yaude/tranquillou-http .
-
-docker-push:
 	docker push yaude/tranquillou-http
+
+docker-alpine:
+	docker build -t yaude/tranquillou-http:alpine -f Dockerfile.alpine .
+	docker push yaude/tranquillou-http:alpine
