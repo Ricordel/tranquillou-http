@@ -5,5 +5,15 @@ This is a stupid http server that's always happy and returns 200 OK. That looks 
 
 Available at https://store.docker.com/community/images/yaude/tranquillou-http
 
-If you want it Dockerized, run with `docker run yaude/tranquillou-http host:port`.
-If you want just a binary, `make` and then `tranquillou-http host:port`.
+If you want it Dockerized, run with
+
+```
+docker run yaude/tranquillou-http host:port`.
+```
+
+If you want just a binary:
+
+```
+make
+./tranquillou-http host:port
+```
