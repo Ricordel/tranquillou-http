@@ -23,6 +23,7 @@ func main() {
         listenAddress = os.Args[1]
     }
 
+    fmt.Println("Listening on " + listenAddress)
 
     if err := http.ListenAndServe(listenAddress, nil); err != nil {
         panic(err)
