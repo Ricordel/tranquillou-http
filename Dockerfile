@@ -1,5 +1,7 @@
 FROM golang:alpine as build
 
+LABEL maintainer="Yoann Ricordel"
+
 COPY tranquillou-http.go /
 WORKDIR /
 
