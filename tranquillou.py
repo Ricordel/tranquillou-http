@@ -48,6 +48,8 @@ class Tranquillou:
         print(json.dumps(body, indent=4))
         print("----------")
 
+
+    #XXX totally ad-hoc for some Catalyst stuff
     async def _token(self, request):
         print("============ token")
         return web.json_response({
@@ -58,6 +60,7 @@ class Tranquillou:
                 }
             })
 
+    #XXX totally ad-hoc for some Catalyst stuff
     async def _actiontypes(self, request):
         print("============ actiontypes")
         return web.json_response([{"id": 1, "type": "offer"}, {"id": 2, "type": "bid"}])
