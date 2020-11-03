@@ -13,7 +13,7 @@ from aiohttp import web
 class Tranquillou:
     def __init__(self, config):
         self.listen_address = urllib.parse.urlparse("http://" + config.listen)
-        self.print_body = config.print_body or config.json_body
+        self.print_body = config.print_body or config.pretty_print_json
         self.pretty_print_json = config.pretty_print_json
         self.response_code = config.response_code
         self.print_headers = config.print_headers
@@ -22,10 +22,7 @@ class Tranquillou:
     async def run(self):
         app = web.Application()
 
-        app.router.add_routes([web.route('POST', '/tokens', self._token)])
-        app.router.add_routes([web.route('POST', '/tokens/', self._token)])
-        app.router.add_routes([web.route('GET', '/actiontypes', self._actiontypes)])
-        app.router.add_routes([web.route('GET', '/actiontypes/', self._actiontypes)])
+        app.router.add_routes([web.route('*', '/status/{code}', self._return_code)])
         app.router.add_routes([web.route('*', '/{tail:.*}', self._handler)])
 
         runner = web.AppRunner(app)
@@ -38,42 +35,24 @@ class Tranquillou:
 
     async def _print_raw(self, request):
         body = await request.text()
-        print("----------")
+        print("---------- Body (raw)")
         print(body)
         print("----------\n")
 
     async def _print_json(self, request):
         body = await request.json()
-        print("----------")
+        print("---------- Body (json)")
         print(json.dumps(body, indent=4))
         print("----------")
 
-
-    #XXX totally ad-hoc for some Catalyst stuff
-    async def _token(self, request):
-        print("============ token")
-        return web.json_response({
-            'token': "abcdefghijklmnopqrstuvwxyz",
-            'chaussures': {
-                    'type': "basses",
-                    'pointure': 41
-                }
-            })
-
-    #XXX totally ad-hoc for some Catalyst stuff
-    async def _actiontypes(self, request):
-        print("============ actiontypes")
-        return web.json_response([{"id": 1, "type": "offer"}, {"id": 2, "type": "bid"}])
-
-    async def _handler(self, request):
-        log.warning(f"{request.method} - {request.url}")
-
+    async def _print_headers(self, request):
         if self.print_headers:
-            print("==== Headers")
+            print("---------- Headers")
             for name, value in request.headers.items():
                 print(f'{name}: {value}')
-            print("====")
+            print("----------")
 
+    async def _print_body(self, request):
         if self.print_body:
             if self.pretty_print_json:
                 try:
@@ -83,6 +62,32 @@ class Tranquillou:
             else:
                 await self._print_raw(request)
 
+
+    async def _print_method_and_url(self, request):
+        print(f'{request.method} - {request.url}')
+
+
+    async def _print_source(self, request):
+        print(f'From: {request.remote}')
+
+    async def _print_all(self, request):
+        await self._print_source(request)
+        await self._print_method_and_url(request)
+        await self._print_headers(request)
+        await self._print_body(request)
+
+    async def _return_code(self, request):
+        print(f"================")
+        await self._print_all(request)
+        code = int(request.match_info["code"])
+        print(f"RETURNING {code}")
+        print(f"================\n")
+        return web.Response(status=code)
+
+    async def _handler(self, request):
+        print(f"================")
+        await self._print_all(request)
+        print(f"================\n")
         return web.Response(status=self.response_code)
 
 
@@ -92,10 +97,11 @@ class Tranquillou:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--listen', "-l", help="listen address", default='localhost:8080')
-    parser.add_argument('--pretty-print-json', action='store_true')
-    parser.add_argument('--print-body', action='store_true')
-    parser.add_argument('--response-code', type=int, default=200)
-    parser.add_argument('--print-headers', action='store_true')
+    parser.add_argument('--pretty-print-json', action='store_true',
+        help="Attempt to pretty-print the body as JSon, fallback to simple text. Implies --print-body")
+    parser.add_argument('--print-body', action='store_true', help="Print the full body")
+    parser.add_argument('--response-code', type=int, default=200, help="Which http code to return by default")
+    parser.add_argument('--print-headers', action='store_true', help="Whether to print request headers")
 
     config = parser.parse_args()
 

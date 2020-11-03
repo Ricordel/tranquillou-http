@@ -1,17 +1,11 @@
-FROM golang:alpine as build
-
+FROM alpine
 LABEL maintainer="Yoann Ricordel"
 
-COPY tranquillou-http.go /
+COPY . /tranquillou
 WORKDIR /
+RUN apk add --no-cache python3 py3-pip gcc python3-dev libc-dev \
+ && pip install --no-cache-dir -r /tranquillou/requirements.txt \
+ && apk del gcc python3-dev libc-dev
 
-# Build a really static binary so that we can put it in scratch
-ENV CGO_ENABLED=0
-RUN go build tranquillou-http.go
+ENTRYPOINT ["python3", "/tranquillou/tranquillou.py"]
 
-
-FROM scratch
-
-COPY --from=build /tranquillou-http /tranquillou-http
-
-ENTRYPOINT ["/tranquillou-http"]

@@ -7,17 +7,20 @@ At first glance, it looks pretty useless. In truth, it mostly is, but can still 
 
 Available at https://store.docker.com/community/images/yaude/tranquillou-http
 
-If you want it Dockerized, run with
+## Run locally
 
 ```
-docker run yaude/tranquillou-http host:port
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+./tranquillou.py --help
 ```
 
-If you want just a binary:
+
+## Run dockerized
 
 ```
-make
-./tranquillou-http host:port
+docker run yaude/tranquillou-http --help
 ```
 
-PR welcome, but if you want to do something interesting with it, maybe just consider using a proper http server?
+and adapt the flags to your needs.
