@@ -9,6 +9,7 @@ import sys
 import urllib.parse
 
 from aiohttp import web
+from datetime import datetime, timezone
 
 class Tranquillou:
     def __init__(self, config):
@@ -72,6 +73,7 @@ class Tranquillou:
         print(f'From: {request.remote}')
 
     async def _print_all(self, request):
+        print(datetime.now(timezone.utc).isoformat())
         await self._print_source(request)
         await self._print_method_and_url(request)
         await self._print_headers(request)
