@@ -35,9 +35,10 @@ class Tranquillou:
 
     async def _print_raw(self, request):
         body = await request.text()
-        print("---------- Body (raw)")
-        print(body)
-        print("----------\n")
+        if len(body) > 0:
+            print("---------- Body (raw)")
+            print(body)
+            print("----------\n")
 
     async def _print_json(self, request):
         body = await request.json()
